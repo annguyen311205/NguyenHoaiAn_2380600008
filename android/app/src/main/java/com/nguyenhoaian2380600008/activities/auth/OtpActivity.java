@@ -146,34 +146,43 @@ public class OtpActivity extends AppCompatActivity {
             return;
         }
 
-        // Xác thực mã OTP qua Repository (/api/Authenticate/verify-otp)
-        boolean isValid = repository.xacThucOTP(email, otpInput);
-        if (!isValid) {
-            tilOtpCode.setError("Mã OTP không chính xác. Vui lòng nhập '" + repository.getLastDemoOtp() + "'");
-            return;
-        }
+        btnVerifyOtp.setEnabled(false);
+        btnVerifyOtp.setText("Đang xác thực...");
 
-        // Lưu phiên đăng nhập
-        if (currentUser == null) {
-            currentUser = repository.timNguoiDungTheoEmail(email);
-        }
+        new Thread(() -> {
+            boolean isValid = repository.xacThucOTP(email, otpInput);
+            runOnUiThread(() -> {
+                btnVerifyOtp.setEnabled(true);
+                btnVerifyOtp.setText("XÁC NHẬN");
 
-        if (currentUser != null) {
-            if ("REGISTER".equalsIgnoreCase(action) && currentUser.getMatKhau() != null && !currentUser.getMatKhau().isEmpty()) {
-                NguoiDung loggedIn = repository.dangNhap(currentUser.getTenDangNhap(), currentUser.getMatKhau());
-                if (loggedIn != null) {
-                    currentUser = loggedIn;
+                if (!isValid) {
+                    tilOtpCode.setError("Mã OTP không chính xác. Vui lòng nhập '" + repository.getLastDemoOtp() + "'");
+                    return;
                 }
-            }
-            String tokenToSave = (currentUser.getToken() != null && !currentUser.getToken().isEmpty())
-                    ? currentUser.getToken()
-                    : "TOKEN_AUTH_" + System.currentTimeMillis();
-            sessionManager.saveUserLogin(currentUser, tokenToSave);
-            navigateByRole(currentUser.getVaiTro());
-        } else {
-            // Mặc định sinh viên nếu không tìm thấy
-            navigateByRole("SINHVIEN");
-        }
+
+                // Lưu phiên đăng nhập
+                if (currentUser == null) {
+                    currentUser = repository.timNguoiDungTheoEmail(email);
+                }
+
+                if (currentUser != null) {
+                    if ("REGISTER".equalsIgnoreCase(action) && currentUser.getMatKhau() != null && !currentUser.getMatKhau().isEmpty()) {
+                        NguoiDung loggedIn = repository.dangNhap(currentUser.getTenDangNhap(), currentUser.getMatKhau());
+                        if (loggedIn != null) {
+                            currentUser = loggedIn;
+                        }
+                    }
+                    String tokenToSave = (currentUser.getToken() != null && !currentUser.getToken().isEmpty())
+                            ? currentUser.getToken()
+                            : "TOKEN_AUTH_" + System.currentTimeMillis();
+                    sessionManager.saveUserLogin(currentUser, tokenToSave);
+                    navigateByRole(currentUser.getVaiTro());
+                } else {
+                    // Mặc định sinh viên nếu không tìm thấy
+                    navigateByRole("SINHVIEN");
+                }
+            });
+        }).start();
     }
 
     /**

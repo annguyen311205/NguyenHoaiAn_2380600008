@@ -11,7 +11,7 @@ class MockDataRepository {
   static final MockDataRepository _instance = MockDataRepository._internal();
   factory MockDataRepository() => _instance;
 
-  static const String baseUrl = 'https://sublet-anew-reprocess.ngrok-free.dev/api';
+  static const String baseUrl = 'https://carport-empty-pulp.ngrok-free.dev/api';
   bool useMockData = false;
   String authToken = '';
   String lastDemoOtp = '123456';

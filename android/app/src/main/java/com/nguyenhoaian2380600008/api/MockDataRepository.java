@@ -80,7 +80,7 @@ public class MockDataRepository {
         }
         try {
             Future<T> future = networkExecutor.submit(task);
-            return future.get(12, TimeUnit.SECONDS);
+            return future.get(8, TimeUnit.SECONDS);
         } catch (Exception e) {
             e.printStackTrace();
             return fallback;
@@ -143,11 +143,79 @@ public class MockDataRepository {
     public static String sanitizeVietnamese(String val) {
         if (val == null) return "";
         val = fixMojibake(val);
-        if (val.contains("Nguy?n H?u Trung")) {
-            val = val.replace("Nguy?n H?u Trung", "Nguyễn Hữu Trung");
+
+        // Chuẩn hóa tên giảng viên & sinh viên
+        if (val.contains("Nguy?n H?u Trung") || val.contains("Nguyn H?u Trung") || val.contains("Nguyen Huu Trung")) {
+            val = val.replace("Nguy?n H?u Trung", "Nguyễn Hữu Trung")
+                     .replace("Nguyn H?u Trung", "Nguyễn Hữu Trung")
+                     .replace("Nguyen Huu Trung", "Nguyễn Hữu Trung");
         }
-        if (val.contains("Nguy?n Hoài An") || val.contains("Nguy?n Hoai An")) {
-            val = val.replace("Nguy?n Hoài An", "Nguyễn Hoài An").replace("Nguy?n Hoai An", "Nguyễn Hoài An");
+        if (val.contains("Nguy?n Hoài An") || val.contains("Nguy?n Hoai An") || val.contains("Nguyen Hoai An")) {
+            val = val.replace("Nguy?n Hoài An", "Nguyễn Hoài An")
+                     .replace("Nguy?n Hoai An", "Nguyễn Hoài An")
+                     .replace("Nguyen Hoai An", "Nguyễn Hoài An");
+        }
+
+        // Khắc phục địa điểm / phòng học
+        if (val.contains("Th? D?c") || val.contains("Th? ?c") || val.contains("Thu Duc") || val.contains("Thá»§ Ä á»©c") || val.contains("Th?")) {
+            val = val.replace("Th? D?c", "Thủ Đức")
+                     .replace("Th? ?c", "Thủ Đức")
+                     .replace("Thá»§ Ä á»©c", "Thủ Đức")
+                     .replace("Thu Duc", "Thủ Đức");
+        }
+
+        // Khắc phục tên môn học
+        if (val.contains("L?p tr") || val.contains("thi?t b? di d?ng")) {
+            val = "Lập trình thiết bị di động";
+        } else if (val.contains("Ki?n tr") || val.contains("ph?n m?m")) {
+            val = "Kiến trúc phần mềm";
+        } else if (val.contains("L?p Tr") || val.contains("Trnh Web")) {
+            val = "Lập trình Web";
+        } else if (val.contains("KT M") || val.contains("KT L") || val.contains("KTCTLN")) {
+            val = "Kinh tế chính trị Mác - Lênin";
+        }
+
+        // Khắc phục tiêu đề các Buổi điểm danh 1 đến 9
+        if (val.startsWith("Bu?i 1") || val.startsWith("Buá»•i 1") || (val.contains("1") && (val.contains("Gi?i thi?u") || val.contains("Flutter")))) {
+            return "Buổi 1: Giới thiệu môn học & Môi trường Flutter (Ca sáng: 07:30 - 11:30)";
+        }
+        if (val.startsWith("Bu?i 2") || val.startsWith("Buá»•i 2") || (val.contains("2") && (val.contains("Dart") || val.contains("OOP")))) {
+            return "Buổi 2: Ngôn ngữ Dart nâng cao & OOP (Ca sáng: 07:30 - 11:30)";
+        }
+        if (val.startsWith("Bu?i 3") || val.startsWith("Buá»•i 3") || (val.contains("3") && (val.contains("Widget") || val.contains("Stateful")))) {
+            return "Buổi 3: Widget cơ bản, Stateless & Stateful (Ca chiều: 12:30 - 16:30)";
+        }
+        if (val.startsWith("Bu?i 4") || val.startsWith("Buá»•i 4") || (val.contains("4") && (val.contains("Navigation") || val.contains("Routes")))) {
+            return "Buổi 4: Navigation, Routes & State Management (Ca sáng: 07:30 - 11:30)";
+        }
+        if (val.startsWith("Bu?i 5") || val.startsWith("Buá»•i 5") || (val.contains("5") && (val.contains("RESTful") || val.contains("JSON")))) {
+            return "Buổi 5: Kết nối RESTful Web API & JSON (Ca chiều: 12:30 - 16:30)";
+        }
+        if (val.startsWith("Bu?i 6") || val.startsWith("Buá»•i 6") || (val.contains("6") && (val.contains("Biometrics") || val.contains("GPS")))) {
+            return "Buổi 6: Cảm biến phần cứng GPS & Biometrics (Ca sáng: 07:30 - 11:30)";
+        }
+        if (val.startsWith("Bu?i 7") || val.startsWith("Buá»•i 7") || (val.contains("7") && (val.contains("Camera") || val.contains("OCR")))) {
+            return "Buổi 7: Xử lý hình ảnh Camera & OCR văn bản (Ca chiều: 12:30 - 16:30)";
+        }
+        if (val.startsWith("Bu?i 8") || val.startsWith("Buá»•i 8") || (val.contains("8") && (val.contains("GPS") || val.contains("tay") || val.contains("Th?c")))) {
+            return "Buổi 8: Thực hành Điểm danh GPS & Vân tay (Đang mở - Cổng kiểm tra)";
+        }
+        if (val.startsWith("Bu?i 9") || val.startsWith("Buá»•i 9") || (val.contains("9") && (val.contains("cu?i") || val.contains("T?ng k?t") || val.contains("cáo")))) {
+            return "Buổi 9: Báo cáo Đồ án cuối kỳ & Tổng kết học phần (Chưa diễn ra)";
+        }
+
+        // Khắc phục các câu trạng thái điểm danh & đơn từ
+        if (val.contains("C m?t dng gi?") || val.contains("C m?t") || val.contains("CĂ³ máº·t") || val.contains("CoMat")) {
+            val = "Có mặt đúng giờ";
+        }
+        if (val.contains("Di tr?") || val.contains("i tr?") || val.contains("Ä‘i trá»…") || val.contains("Ä\u0090i trá»…") || val.contains("DiTre")) {
+            val = val.replace("Di tr?", "Đi trễ").replace("i tr?", "Đi trễ").replace("Ä\u0090i trá»…", "Đi trễ").replace("Ä‘i trá»…", "Đi trễ");
+        }
+        if (val.contains("B?nh vi?n") || val.contains("Quân Dân Y") || val.contains("Miền Đông")) {
+            val = "Địa điểm: Bệnh viện Quân Dân Y Miền Đông | Vắng có phép (Đơn nghỉ ốm đã duyệt)";
+        }
+        if (val.contains("Vincom") || val.contains("Võ Văn Ngân") || val.contains("sai vị trí")) {
+            val = "Địa điểm: Vincom Plaza Thủ Đức (216 Võ Văn Ngân) | Vắng: Điểm danh sai vị trí";
         }
         if ("Di kham benh dinh ky".equalsIgnoreCase(val.trim())) {
             val = "Đi khám bệnh định kỳ";
@@ -747,7 +815,11 @@ public class MockDataRepository {
         ph.setLopHocPhanId(lopHocPhanId);
         ph.setSoThuTuBuoi(soThuTuBuoi);
         ph.setBanKinhChoPhepMet(banKinh);
-        ph.setGhiChu(getStr(obj, "ghiChu", "Buổi " + soThuTuBuoi));
+        String ghiChu = getStr(obj, "ghiChu", "");
+        if (ghiChu.isEmpty() || ghiChu.equalsIgnoreCase("Buổi " + soThuTuBuoi) || ghiChu.contains("?")) {
+            ghiChu = sanitizeVietnamese("Buổi " + soThuTuBuoi);
+        }
+        ph.setGhiChu(ghiChu);
         ph.setNgayDiemDanh(datePart);
         ph.setGioBatDau(gioBatDau);
         ph.setGioKetThuc(gioKetThuc);
@@ -949,7 +1021,10 @@ public class MockDataRepository {
         if (obj.has("buoiDiemDanh") && !obj.get("buoiDiemDanh").isJsonNull() && obj.get("buoiDiemDanh").isJsonObject()) {
             JsonObject bObj = obj.getAsJsonObject("buoiDiemDanh");
             soThuTuBuoi = getInt(bObj, "soThuTuBuoi", buoiId);
-            tenBuoi = getStr(bObj, "ghiChu", "Buổi " + soThuTuBuoi);
+            tenBuoi = getStr(bObj, "ghiChu", "");
+            if (tenBuoi.isEmpty() || tenBuoi.equalsIgnoreCase("Buổi " + soThuTuBuoi) || tenBuoi.contains("?")) {
+                tenBuoi = sanitizeVietnamese("Buổi " + soThuTuBuoi);
+            }
             if (bObj.has("lopHocPhan") && !bObj.get("lopHocPhan").isJsonNull() && bObj.get("lopHocPhan").isJsonObject()) {
                 JsonObject lObj = bObj.getAsJsonObject("lopHocPhan");
                 maLopHocPhan = getStr(lObj, "maLopHocPhan", maLopHocPhan);

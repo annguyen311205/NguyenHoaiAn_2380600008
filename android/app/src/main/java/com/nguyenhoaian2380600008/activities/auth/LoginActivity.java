@@ -33,22 +33,10 @@ public class LoginActivity extends AppCompatActivity {
 
     private MockDataRepository repository;
     private SessionManager sessionManager;
-    private static io.flutter.embedding.engine.FlutterEngine backgroundFlutterEngine;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // Khởi tạo FlutterEngine nền để tương thích hoàn toàn khi chạy/debug bằng cấu hình Flutter (main.dart)
-        if (backgroundFlutterEngine == null) {
-            try {
-                backgroundFlutterEngine = new io.flutter.embedding.engine.FlutterEngine(getApplicationContext());
-                backgroundFlutterEngine.getDartExecutor().executeDartEntrypoint(
-                        io.flutter.embedding.engine.dart.DartExecutor.DartEntrypoint.createDefault()
-                );
-            } catch (Throwable ignored) {
-            }
-        }
 
         sessionManager = SessionManager.getInstance(this);
         repository = MockDataRepository.getInstance();
@@ -145,21 +133,29 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        // Kiểm tra thông tin đăng nhập trong Repository
-        NguoiDung user = repository.dangNhap(username, password);
-        if (user != null) {
-            Toast.makeText(this, "Đăng nhập thành công! Chuyển sang xác thực mã OTP gửi về Email.", Toast.LENGTH_SHORT).show();
+        btnLogin.setEnabled(false);
+        btnLogin.setText("Đang đăng nhập...");
 
-            // Chuyển sang màn hình OTP để kiểm tra xác thực 2 lớp theo đúng luồng đề bài
-            Intent intent = new Intent(LoginActivity.this, OtpActivity.class);
-            intent.putExtra("ACTION", "LOGIN");
-            intent.putExtra("EMAIL", user.getEmail());
-            intent.putExtra("USER_OBJ", user);
-            startActivity(intent);
-        } else {
-            tilPassword.setError("Tên đăng nhập hoặc mật khẩu không chính xác!");
-            Toast.makeText(this, "Đăng nhập thất bại. Vui lòng bấm chọn tài khoản mẫu bên dưới để thử nghiệm!", Toast.LENGTH_LONG).show();
-        }
+        new Thread(() -> {
+            NguoiDung user = repository.dangNhap(username, password);
+            runOnUiThread(() -> {
+                btnLogin.setEnabled(true);
+                btnLogin.setText("ĐĂNG NHẬP");
+                if (user != null) {
+                    Toast.makeText(LoginActivity.this, "Đăng nhập thành công! Chuyển sang xác thực mã OTP gửi về Email.", Toast.LENGTH_SHORT).show();
+
+                    // Chuyển sang màn hình OTP để kiểm tra xác thực 2 lớp theo đúng luồng đề bài
+                    Intent intent = new Intent(LoginActivity.this, OtpActivity.class);
+                    intent.putExtra("ACTION", "LOGIN");
+                    intent.putExtra("EMAIL", user.getEmail());
+                    intent.putExtra("USER_OBJ", user);
+                    startActivity(intent);
+                } else {
+                    tilPassword.setError("Tên đăng nhập hoặc mật khẩu không chính xác!");
+                    Toast.makeText(LoginActivity.this, "Đăng nhập thất bại. Vui lòng bấm chọn tài khoản mẫu bên dưới để thử nghiệm!", Toast.LENGTH_LONG).show();
+                }
+            });
+        }).start();
     }
 
     /**
