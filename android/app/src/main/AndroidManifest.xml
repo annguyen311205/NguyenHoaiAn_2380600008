@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- 1. QUYỀN MẠNG & INTERNET -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <!-- 2. QUYỀN CAMERA (ĐIỂM DANH QR & KHUÔN MẶT) -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
+
+    <!-- 3. QUYỀN VỊ TRÍ (FINE & COARSE LOCATION) -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-feature android:name="android.hardware.location.gps" android:required="false" />
+
+    <!-- 4. QUYỀN SINH TRẮC HỌC & VÂN TAY -->
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.SmartAttendance"
+        android:usesCleartextTraffic="true"
+        tools:targetApi="34">
+
+        <!-- MÀN HÌNH KHỞI ĐỘNG CHÍNH: ĐĂNG NHẬP -->
+        <activity
+            android:name="com.nguyenhoaian2380600008.activities.auth.LoginActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- CÁC MÀN HÌNH XÁC THỰC -->
+        <activity
+            android:name="com.nguyenhoaian2380600008.activities.auth.RegisterActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name="com.nguyenhoaian2380600008.activities.auth.OtpActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- CÁC MÀN HÌNH THEO PHÂN QUYỀN -->
+        <activity
+            android:name="com.nguyenhoaian2380600008.activities.admin.AdminMainActivity"
+            android:exported="false" />
+
+        <activity
+            android:name="com.nguyenhoaian2380600008.activities.giangvien.GiangVienDashboardActivity"
+            android:exported="false" />
+
+        <activity
+            android:name="com.nguyenhoaian2380600008.activities.sinhvien.SinhVienMainActivity"
+            android:exported="false" />
+
+        <activity
+            android:name="com.nguyenhoaian2380600008.activities.auth.FaceAuthActivity"
+            android:exported="false" />
+
+        <activity
+            android:name="com.nguyenhoaian2380600008.activities.giangvien.TaoPhienQRActivity"
+            android:exported="false" />
+
+        <activity
+            android:name="com.nguyenhoaian2380600008.activities.sinhvien.QuetQRDiemDanhActivity"
+            android:exported="false" />
+
+        <activity
+            android:name="com.nguyenhoaian2380600008.activities.sinhvien.DonXinPhepActivity"
+            android:exported="false" />
+
+        <!-- Bắt buộc cho Flutter CLI v2 Embedding -->
+        <meta-data
+            android:name="flutterEmbedding"
+            android:value="2" />
+
+    </application>
+
+</manifest>

@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:fillViewport="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="32dp">
+
+        <!-- HEADER GRADIENT -->
+        <View
+            android:id="@+id/viewGvQrHeader"
+            android:layout_width="0dp"
+            android:layout_height="170dp"
+            android:background="@drawable/bg_gradient_header"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/btnQrBack"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/bg_rounded_card"
+            android:contentDescription="Quay lại"
+            android:padding="8dp"
+            android:src="@drawable/ic_arrow_back"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvQrHeaderTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="22dp"
+            android:text="CHIẾU MÃ QR ĐIỂM DANH"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvQrHeaderSubtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Đồng bộ trực tiếp với /api/BuoiDiemDanh &amp; /api/DiemDanh"
+            android:textColor="#E0E7FF"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvQrHeaderTitle" />
+
+        <!-- CARD MÃ QR -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardQrDisplay"
+            style="@style/Widget.App.CardView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="20dp"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="6dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvQrHeaderSubtitle">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <!-- ẢNH MÃ QR -->
+                <ImageView
+                    android:id="@+id/imgQrCode"
+                    android:layout_width="250dp"
+                    android:layout_height="250dp"
+                    android:background="#FFFFFF"
+                    android:contentDescription="Mã QR điểm danh"
+                    android:padding="6dp" />
+
+                <!-- THANH ĐẾM NGƯỢC CẬP NHẬT LƯỢT ĐIỂM DANH TỪ SERVER -->
+                <com.google.android.material.progressindicator.LinearProgressIndicator
+                    android:id="@+id/pbQrRefresh"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:max="15"
+                    android:progress="15"
+                    app:indicatorColor="@color/primary"
+                    app:trackColor="@color/divider"
+                    app:trackCornerRadius="4dp" />
+
+                <TextView
+                    android:id="@+id/tvQrCountdown"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="🔄 Tự động đồng bộ danh sách SV từ Server sau: 15s"
+                    android:textColor="@color/primary"
+                    android:textSize="12.5sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvDynamicQrToken"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="🔑 Mã QR trên Server: QR_HUTECH_LTDD_BUOI03"
+                    android:textColor="#059669"
+                    android:textSize="12.5sp"
+                    android:textStyle="bold" />
+
+                <!-- NÚT ĐỔI MÃ QR MỚI TRÊN SERVER -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnRefreshQrNow"
+                    style="@style/Widget.Material3.Button.TonalButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="38dp"
+                    android:layout_marginTop="8dp"
+                    android:backgroundTint="@color/primary_container"
+                    android:text="🔄 Đổi mã QR mới trên Server"
+                    android:textColor="@color/primary"
+                    android:textSize="12sp"
+                    app:cornerRadius="12dp" />
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- CARD THÔNG TIN BUỔI HỌC & TỌA ĐỘ GPS -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardGpsInfo"
+            style="@style/Widget.App.CardView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="20dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="3dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cardQrDisplay">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/tvQrClassInfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="📚 Lớp: 24DTH01_LTDD - Lập trình thiết bị di động"
+                    android:textColor="@color/text_primary"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvGvGpsLocation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="📍 Phòng A-04.05 • GPS: 10.8018, 106.7142 (Bán kính: 150m)"
+                    android:textColor="@color/primary"
+                    android:textSize="12.5sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnMockGpsLocation"
+                        style="@style/Widget.Material3.Button.TonalButton"
+                        android:layout_width="0dp"
+                        android:layout_height="42dp"
+                        android:layout_marginEnd="6dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="#ECFDF5"
+                        android:text="👥 DS SV Điểm Danh"
+                        android:textColor="#059669"
+                        android:textSize="11.5sp"
+                        app:cornerRadius="12dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnFetchRealGps"
+                        style="@style/Widget.Material3.Button.TonalButton"
+                        android:layout_width="0dp"
+                        android:layout_height="42dp"
+                        android:layout_marginStart="6dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/primary_container"
+                        android:text="📡 Cập Nhật GPS"
+                        android:textColor="@color/primary"
+                        android:textSize="11.5sp"
+                        app:cornerRadius="12dp" />
+                </LinearLayout>
+
+                <!-- NÚT ĐÓNG PHIÊN -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnCloseSession"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="12dp"
+                    android:backgroundTint="#DC2626"
+                    android:text="KẾT THÚC &amp; ĐÓNG BUỔI ĐIỂM DANH"
+                    android:textColor="@color/white"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    app:cornerRadius="14dp" />
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
